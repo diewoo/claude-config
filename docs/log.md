@@ -2,6 +2,18 @@
 
 Changes to the workflow, newest first. One entry per change: date, what, why.
 
+## 2026-11-27: repo public, deny rules and dashboard hook fixed
+
+- Repo made public. Client names replaced with generic examples; history squashed to one commit.
+- Deny rules for home files are now anchored to `~/` (`Read(~/.ssh/**)`, …). Before, paths like
+  `.ssh/*` only matched inside the folder Claude Code was opened in. `secrets/` rules now match
+  nested files (`**/secrets/**`). Rules like `Read(.env)` stay as they are: a bare filename already
+  matches at any depth under that folder, but not in other projects.
+- `dashboard-guard.py` no longer follows a `.dashboard` symlink: the allowed root is the real
+  project folder plus `.dashboard`, so a symlinked `.dashboard` cannot point writes elsewhere.
+  Any error in the hook now blocks the call (exit 2) instead of letting it through (exit 1).
+- Why: an automated security review flagged both.
+
 ## 2026-11-26: repo created
 
 - Moved my own pieces of `~/.claude` here: the Idioma, Progress dashboard and Plan critique

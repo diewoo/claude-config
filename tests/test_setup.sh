@@ -180,6 +180,26 @@ new_env
 run_setup --bogus
 check "unknown option exits 2" [ "$RC" -eq 2 ]
 
+HOOK="$REPO/claude/hooks/dashboard-guard.py"
+H=$(mktemp -d); SCRATCH+=("$H")
+mkdir -p "$H/proj/.dashboard" "$H/outside" "$H/evil"
+ln -s "$H/outside" "$H/evil/.dashboard"
+ln -s "$H/outside/target" "$H/proj/.dashboard/link"
+guard() { printf '{"tool_name":"%s","cwd":"%s","tool_input":{"%s":"%s"}}' "$1" "$2" "$3" "$4" | python3 "$HOOK" 2>/dev/null; }
+check "hook allows a write inside .dashboard" guard Write "$H/proj" file_path .dashboard/index.html
+check "hook allows date" guard Bash "$H/proj" command date
+denied() { ! guard "$@"; }
+check "hook denies a write outside .dashboard" denied Write "$H/proj" file_path ../outside/x
+check "hook denies a symlinked .dashboard" denied Write "$H/evil" file_path .dashboard/index.html
+check "hook denies a symlink inside .dashboard" denied Write "$H/proj" file_path .dashboard/link
+check "hook denies invalid input" bash -c "echo 'not json' | python3 '$HOOK' 2>/dev/null; [ \$? -eq 2 ]"
+check "hook denies a non-string path" bash -c "printf '{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":123}}' | python3 '$HOOK' 2>/dev/null; [ \$? -eq 2 ]"
+
+DENY="$REPO/claude/settings.custom.json"
+check "home deny rules are anchored to ~" jq -e '[.permissions.deny[] | select(test("^(Read|Edit)\\((\\.ssh|\\.aws|\\.config|\\.credentials|Library)"))] | length == 0' "$DENY"
+check "ssh deny rule covers ~/.ssh recursively" jq -e '.permissions.deny | index("Read(~/.ssh/**)") != null' "$DENY"
+check "secrets deny rule covers nested folders" jq -e '.permissions.deny | index("Read(**/secrets/**)") != null' "$DENY"
+
 for d in "${SCRATCH[@]}"; do rm -rf "$d"; done
 echo "$PASSES passed, $FAILS failed"
 [ "$FAILS" -eq 0 ]
