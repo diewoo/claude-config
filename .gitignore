@@ -1,0 +1,5 @@
+.DS_Store
+.dashboard/
+.codegraph/
+.atl/
+engram-export*.json

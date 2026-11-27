@@ -1,0 +1,10 @@
+# Skills installed with `npx skills add <source>`, from ~/.agents/.skill-lock.json.
+# setup.sh prints these commands; run them by hand and pick only the named skill and Claude Code.
+# <skill> <source>
+archify tt-a1i/archify
+unslop cursor/plugins
+find-skills vercel-labs/skills
+backend-testing supercent-io/skills-template
+webapp-testing anthropics/skills
+orchestration stablyai/orca
+orca-cli stablyai/orca

@@ -1,0 +1,19 @@
+# Claude Code marketplaces and plugins installed by setup.sh.
+# marketplace <name> <github owner/repo>
+# plugin <plugin>@<marketplace>
+marketplace claude-plugins-official anthropics/claude-plugins-official
+marketplace code-review-graph tirth8205/code-review-graph
+marketplace engram Gentleman-Programming/engram
+marketplace i-have-adhd ayghri/i-have-adhd
+marketplace ponytail dietrichgebert/ponytail
+plugin mattpocock-skills@claude-plugins-official
+plugin superpowers@claude-plugins-official
+plugin context7@claude-plugins-official
+plugin github@claude-plugins-official
+plugin figma@claude-plugins-official
+plugin gopls-lsp@claude-plugins-official
+plugin security-guidance@claude-plugins-official
+plugin engram@engram
+plugin code-review-graph@code-review-graph
+plugin ponytail@ponytail
+plugin i-have-adhd@i-have-adhd
